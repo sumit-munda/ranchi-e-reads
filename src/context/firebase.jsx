@@ -10,14 +10,16 @@ const FirebaseContext = createContext(null);
 const useFirebase = () => useContext(FirebaseContext);
 
 const firebaseConfig = {
-	apiKey: "AIzaSyBsPdik5StbDHpUf3mwxiO8vTdGMuxYCso",
-	authDomain: "ranchi-e-reads.firebaseapp.com",
-	projectId: "ranchi-e-reads",
-	storageBucket: "ranchi-e-reads.firebasestorage.app",
-	messagingSenderId: "284199484120",
-	appId: "1:284199484120:web:06813f19694ce732d9b5ad",
-	measurementId: "G-FVLWZBRQBJ",
+	apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+	authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+	projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+	storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+	messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+	appId: import.meta.env.VITE_FIREBASE_APP_ID,
+	measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
+
+console.log(import.meta.env.REACT_APP_FIREBASE_API_KEY);
 
 // Initialize Firebase
 const firebaseApp = initializeApp(firebaseConfig);
