@@ -25,6 +25,8 @@ const firebaseConfig = {
 	measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
+console.log(import.meta.env.REACT_APP_FIREBASE_API_KEY);
+
 // Initialize Firebase
 const firebaseApp = initializeApp(firebaseConfig);
 const firebaseAuth = getAuth(firebaseApp);
