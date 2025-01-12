@@ -1,20 +1,40 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 
 // useFirebaseContext
-import { useFirebase } from "../context/firebase";
+import { firebaseAuth, useFirebase } from "../context/firebase";
+import { useNavigate } from "react-router-dom";
+import { signOut } from "firebase/auth";
 
 const RegisterPage = () => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [termsChecked, setTermsChecked] = useState(false);
+	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(false);
 
 	const firebase = useFirebase();
+	const navigate = useNavigate();
+
+	useEffect(() => {
+		if (firebase.isLoggedIn) {
+			console.log(`Hey, How are you doing.`);
+		}
+	}, [firebase.isLoggedIn]);
+
+	const handleLogout = async () => {
+		try {
+			await signOut(firebaseAuth);
+			firebase.setIsLoggedIn(false);
+			navigate("/");
+		} catch (error) {
+			console.error("Sign out error:", error);
+		}
+	};
 
 	const handleFormSubmit = async (e) => {
 		e.preventDefault();
-		firebase.setLoading(true);
+		setLoading(true);
 		setError("");
 
 		if (!termsChecked) {
@@ -29,16 +49,25 @@ const RegisterPage = () => {
 		} catch (error) {
 			setError(`Error: ${error.message}`);
 		} finally {
-			firebase.setLoading(false);
+			setLoading(false);
 			setEmail("");
 			setPassword("");
 			setTermsChecked(false);
 		}
 	};
-	console.log(firebase);
+
+	if (firebase.isLoggedIn) {
+		return (
+			<div className="container">
+				<p>You are logged in.</p>
+				<Button onClick={handleLogout}>Logout</Button>
+			</div>
+		);
+	}
 
 	return (
 		<div className="container">
+			{error && <Alert variant="danger">{error}</Alert>}
 			<Form onSubmit={handleFormSubmit}>
 				<Form.Group
 					className="mb-3"
@@ -79,11 +108,11 @@ const RegisterPage = () => {
 				<Button
 					variant="primary"
 					type="submit"
-					disabled={firebase.loading || !termsChecked}>
-					{firebase.loading ? "Signing Up..." : "Sign Up"}
+					disabled={loading || !termsChecked}>
+					{loading ? "Signing Up..." : "Sign Up"}
 				</Button>
 			</Form>
-			{firebase.loading && <p>Loading...</p>}
+			{loading && <p>Loading...</p>}
 		</div>
 	);
 };

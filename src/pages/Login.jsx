@@ -1,9 +1,8 @@
-import React, { useState } from "react";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { firebaseApp } from "../context/firebase";
-import { Button, Form } from "react-bootstrap";
-
-const auth = getAuth(firebaseApp);
+import React, { useEffect, useState } from "react";
+import { Button, Form, Alert } from "react-bootstrap";
+import { firebaseAuth, useFirebase } from "../context/firebase";
+import { signOut } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
 	const [email, setEmail] = useState("");
@@ -11,6 +10,25 @@ const LoginPage = () => {
 	const [loading, setLoading] = useState(false);
 	const [rememberMe, setRememberMe] = useState(false);
 	const [error, setError] = useState("");
+
+	const firebase = useFirebase();
+	const navigate = useNavigate();
+
+	useEffect(() => {
+		if (firebase.isLoggedIn) {
+			console.log(`Hey, How are you doing.`);
+		}
+	}, [firebase.isLoggedIn]);
+
+	const handleLogout = async () => {
+		try {
+			await signOut(firebaseAuth);
+			firebase.setIsLoggedIn(false);
+			navigate("/");
+		} catch (error) {
+			console.error("Sign out error:", error);
+		}
+	};
 
 	const handleFormSubmit = async (e) => {
 		e.preventDefault();
@@ -24,9 +42,14 @@ const LoginPage = () => {
 		}
 
 		try {
-			const data = await signInWithEmailAndPassword(auth, email, password);
+			const data = await firebase.signinWithEmailAndPassword(
+				firebaseAuth,
+				email,
+				password
+			);
 			console.log(data);
-			alert("Sign In Successfully!");
+			firebase.setIsLoggedIn(true);
+			console.log("Sign In Successfully!");
 		} catch (error) {
 			if (error.code === "auth/user-not-found") {
 				setError("User not found. Please check your email.");
@@ -42,6 +65,16 @@ const LoginPage = () => {
 			setRememberMe(false);
 		}
 	};
+
+	if (firebase.isLoggedIn) {
+		return (
+			<div className="container">
+				<p>You are logged in.</p>
+				<Button onClick={handleLogout}>Logout</Button>
+			</div>
+		);
+	}
+
 	return (
 		<div className="container">
 			{error && <Alert variant="danger">{error}</Alert>}
@@ -87,10 +120,10 @@ const LoginPage = () => {
 					disabled={loading}>
 					{loading ? "Signing In..." : "Sign In"}
 				</Button>
-                <h6 className="mt-3 mb-3">OR</h6>
-                <Button
+				<h6 className="mt-3 mb-3">OR</h6>
+				<Button
 					variant="primary"
-					type="submit"
+					onClick={firebase.signinWithGoogle}
 					disabled={loading}>
 					{loading ? "Signing In..." : "Signin with Google"}
 				</Button>
