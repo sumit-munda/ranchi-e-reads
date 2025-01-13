@@ -11,6 +11,7 @@ import "./App.css";
 //Components
 import OurNavbar from "./components/Navbar";
 import ListingPage from "./pages/Listing";
+import HomePage from "./pages/Home";
 
 const App = () => {
 	return (
@@ -19,7 +20,7 @@ const App = () => {
 			<Routes>
 				<Route
 					path="/"
-					element={<p>Home</p>}
+					element={<HomePage />}
 				/>
 				<Route
 					path="/login"

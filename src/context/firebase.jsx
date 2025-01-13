@@ -8,8 +8,8 @@ import {
 	signInWithEmailAndPassword,
 	onAuthStateChanged,
 } from "firebase/auth";
-import { getFirestore, collection, addDoc } from "firebase/firestore";
-// import { getStorage, ref, uploadBytes } from "firebase/storage";
+import { getFirestore, collection, addDoc, getDocs } from "firebase/firestore";
+// import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 // Context created (warehouse)
 const FirebaseContext = createContext(null);
@@ -89,15 +89,32 @@ const FirebaseProvider = (props) => {
 	// 	});
 	// };
 
-	const handleNewListingWithoutPic = async (name, isbn, price) => {
+	const handleNewListingWithoutPic = async (
+		name,
+		isbn,
+		price,
+		authorName,
+		imageURL
+	) => {
 		const result = await addDoc(collection(firestore, "books"), {
 			name,
+			authorName,
 			isbn,
 			price,
+			imageURL,
 			createdAt: Date.now(),
+			displayName: user.displayName,
 		});
 		console.log(result);
 	};
+
+	const listAllBooks = () => {
+		return getDocs(collection(firestore, "books"));
+	};
+
+	// const getImageURL = (path) => {
+	// 	return getDownloadURL(ref(storage, path));
+	// };
 
 	return (
 		<FirebaseContext.Provider
@@ -110,6 +127,8 @@ const FirebaseProvider = (props) => {
 				user,
 				// handleNewListing,
 				handleNewListingWithoutPic,
+				listAllBooks,
+				// getImageURL,
 			}}>
 			{props.children}
 		</FirebaseContext.Provider>

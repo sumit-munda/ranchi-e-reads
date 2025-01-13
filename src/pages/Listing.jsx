@@ -5,8 +5,10 @@ import { useFirebase } from "../context/firebase";
 
 const ListingPage = () => {
 	const [name, setName] = useState("");
+	const [authorName, setAuthorName] = useState("");
 	const [isbn, setIsbn] = useState("");
 	const [price, setPrice] = useState("");
+	const [imageURL, setImageURL] = useState("");
 	// const [coverPic, setCoverPic] = useState("");
 	const [loading, setLoading] = useState(false);
 
@@ -16,11 +18,19 @@ const ListingPage = () => {
 		e.preventDefault();
 		setLoading(true);
 		// await firebase.handleNewListing(name, isbn, price, coverPic);
-		await firebase.handleNewListingWithoutPic(name, isbn, price);
+		await firebase.handleNewListingWithoutPic(
+			name,
+			authorName,
+			isbn,
+			price,
+			imageURL
+		);
 		setLoading(false);
 		setName("");
+		setAuthorName("");
 		setIsbn("");
 		setPrice("");
+		setImageURL("");
 		// setCoverPic("");
 	};
 
@@ -38,6 +48,18 @@ const ListingPage = () => {
 						placeholder="Book name"
 						value={name}
 						onChange={(e) => setName(e.target.value)}
+					/>
+				</Form.Group>
+
+				<Form.Group
+					className="mb-3"
+					controlId="formBasicEmail">
+					<Form.Label>Enter Author Name</Form.Label>
+					<Form.Control
+						type="text"
+						placeholder="Author name"
+						value={authorName}
+						onChange={(e) => setAuthorName(e.target.value)}
 					/>
 				</Form.Group>
 
@@ -61,6 +83,18 @@ const ListingPage = () => {
 						placeholder="Price"
 						value={price}
 						onChange={(e) => setPrice(e.target.value)}
+					/>
+				</Form.Group>
+
+				<Form.Group
+					className="mb-3"
+					controlId="formBasicPassword">
+					<Form.Label>Enter ImageURL</Form.Label>
+					<Form.Control
+						type="url"
+						placeholder="ImageURL"
+						value={imageURL}
+						onChange={(e) => setImageURL(e.target.value)}
 					/>
 				</Form.Group>
 				{/* <Form.Group
