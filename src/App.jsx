@@ -1,21 +1,25 @@
 import { Route, Routes } from "react-router-dom";
 
 // Pages
+import RegisterPage from "./pages/Register";
+import LoginPage from "./pages/Login";
 
 // CSS
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-import { Button } from "react-bootstrap";
-import RegisterPage from "./pages/Register";
-import LoginPage from "./pages/Login";
+
+//Components
+import OurNavbar from "./components/Navbar";
+import ListingPage from "./pages/Listing";
 
 const App = () => {
 	return (
 		<>
+			<OurNavbar />
 			<Routes>
 				<Route
 					path="/"
-					element={<Button variant="primary">Home</Button>}
+					element={<p>Home</p>}
 				/>
 				<Route
 					path="/login"
@@ -24,6 +28,10 @@ const App = () => {
 				<Route
 					path="/register"
 					element={<RegisterPage />}
+				/>
+				<Route
+					path="/book/list"
+					element={<ListingPage />}
 				/>
 			</Routes>
 		</>

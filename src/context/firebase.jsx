@@ -8,6 +8,8 @@ import {
 	signInWithEmailAndPassword,
 	onAuthStateChanged,
 } from "firebase/auth";
+import { getFirestore, collection, addDoc } from "firebase/firestore";
+// import { getStorage, ref, uploadBytes } from "firebase/storage";
 
 // Context created (warehouse)
 const FirebaseContext = createContext(null);
@@ -30,6 +32,8 @@ console.log(import.meta.env.REACT_APP_FIREBASE_API_KEY);
 // Initialize Firebase
 const firebaseApp = initializeApp(firebaseConfig);
 const firebaseAuth = getAuth(firebaseApp);
+const firestore = getFirestore(firebaseApp);
+// const storage = getStorage(firebaseApp);
 
 const googleProvider = new GoogleAuthProvider();
 
@@ -67,6 +71,34 @@ const FirebaseProvider = (props) => {
 		signInWithPopup(firebaseAuth, googleProvider);
 	};
 
+	// const handleNewListing = async (name, isbn, price, coverPic) => {
+	// 	const imageRef = ref(
+	// 		storage,
+	// 		`uploads/image/${Date.now()}-${coverPic.name}`
+	// 	);
+	// 	const uploadResult = await uploadBytes(imageRef, coverPic);
+	// 	return await addDoc(collection(firestore, "books"), {
+	// 		name,
+	// 		isbn,
+	// 		price,
+	// 		imageURL: uploadResult.ref.fullPath,
+	// 		userID: user.uid,
+	// 		userEmail: user.email,
+	// 		displayName: user.displayName,
+	// 		photoURL: user.photoURL,
+	// 	});
+	// };
+
+	const handleNewListingWithoutPic = async (name, isbn, price) => {
+		const result = await addDoc(collection(firestore, "books"), {
+			name,
+			isbn,
+			price,
+			createdAt: Date.now(),
+		});
+		console.log(result);
+	};
+
 	return (
 		<FirebaseContext.Provider
 			value={{
@@ -75,7 +107,9 @@ const FirebaseProvider = (props) => {
 				signinWithGoogle,
 				isLoggedIn,
 				setIsLoggedIn,
-				user
+				user,
+				// handleNewListing,
+				handleNewListingWithoutPic,
 			}}>
 			{props.children}
 		</FirebaseContext.Provider>
