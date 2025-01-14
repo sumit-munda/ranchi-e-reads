@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Button, Card } from "react-bootstrap";
 import { useFirebase } from "../context/firebase";
+import { useNavigate } from "react-router-dom";
 
 const BookCard = (props) => {
-	const firebase = useFirebase();
+	// const firebase = useFirebase();
+	const navigate = useNavigate();
+
 	// const [url, setURL] = useState(null);
 
 	// useEffect(() => {
@@ -13,8 +16,14 @@ const BookCard = (props) => {
 	// 	};
 	// 	fetchImageURL();
 	// }, []);
+
 	return (
-		<Card style={{ width: "18rem", border: "1px dotted rgba(13, 110, 253, 1)", borderRadius: '10px' }}>
+		<Card
+			style={{
+				width: "18rem",
+				border: "1px dotted rgba(13, 110, 253, 1)",
+				borderRadius: "10px",
+			}}>
 			<Card.Img
 				variant="top"
 				src={props.imageURL}
@@ -27,8 +36,9 @@ const BookCard = (props) => {
 				</Card.Text>
 				<Button
 					variant="primary"
-					className="d-flex">
-					Go somewhere
+					className="d-flex"
+					onClick={(e) => navigate(props.link)}>
+					View Details
 				</Button>
 			</Card.Body>
 		</Card>

@@ -8,7 +8,16 @@ import {
 	signInWithEmailAndPassword,
 	onAuthStateChanged,
 } from "firebase/auth";
-import { getFirestore, collection, addDoc, getDocs } from "firebase/firestore";
+import {
+	getFirestore,
+	collection,
+	addDoc,
+	getDocs,
+	doc,
+	getDoc,
+	query,
+	where,
+} from "firebase/firestore";
 // import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 // Context created (warehouse)
@@ -104,12 +113,57 @@ const FirebaseProvider = (props) => {
 			imageURL,
 			createdAt: Date.now(),
 			displayName: user.displayName,
+			userID: user.uid,
 		});
 		console.log(result);
 	};
 
 	const listAllBooks = () => {
 		return getDocs(collection(firestore, "books"));
+	};
+
+	const getBookById = async (id) => {
+		const docRef = doc(firestore, "books", id);
+		const result = await getDoc(docRef);
+		return result;
+	};
+
+	const placeOrder = async (bookId, qty) => {
+		const collectionRef = collection(firestore, "books", bookId, "orders");
+		const result = await addDoc(collectionRef, {
+			userID: user.uid,
+			userEmail: user.email,
+			displayName: user.displayName,
+			photoURL: user.photoURL,
+			qty,
+		});
+		return result;
+	};
+
+	const fetchBooks = async (userID) => {
+		if (!user) return null;
+		const collectionRef = collection(firestore, "books");
+		collection;
+		const q = query(collectionRef, where("userID", "==", userID));
+		const result = await getDocs(q);
+		return result;
+	};
+
+	const getOrders = async (bookId) => {
+		try {
+			if (!bookId) {
+				console.error("Invalid bookId: ", bookId);
+				return [];
+			}
+
+			const collectionRef = collection(firestore, "books", bookId, "orders");
+			const querySnapshot = await getDocs(collectionRef);
+			const orders = querySnapshot.docs.map((doc) => doc.data());
+			return orders;
+		} catch (error) {
+			console.error("Error fetching orders: ", error);
+			throw error;
+		}
 	};
 
 	// const getImageURL = (path) => {
@@ -128,6 +182,11 @@ const FirebaseProvider = (props) => {
 				// handleNewListing,
 				handleNewListingWithoutPic,
 				listAllBooks,
+				getBookById,
+				placeOrder,
+				fetchBooks,
+				getOrders,
+				// user,
 				// getImageURL,
 			}}>
 			{props.children}

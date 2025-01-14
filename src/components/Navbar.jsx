@@ -47,9 +47,8 @@ const OurNavbar = () => {
 						</NavDropdown>
 						<Nav.Link
 							as={NavLink}
-							to={"/link"}
-							disabled>
-							Link
+							to={"/book/orders"}>
+							Orders
 						</Nav.Link>
 					</Nav>
 					<Form className="d-flex">

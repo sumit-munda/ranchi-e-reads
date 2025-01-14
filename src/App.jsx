@@ -12,6 +12,10 @@ import "./App.css";
 import OurNavbar from "./components/Navbar";
 import ListingPage from "./pages/Listing";
 import HomePage from "./pages/Home";
+import DetailsPage from "./components/Details";
+import ViewOrderPage from "./pages/ViewOrder";
+import ViewOrderDetails from "./pages/ViewOrderDetails";
+import { useEffect } from "react";
 
 const App = () => {
 	return (
@@ -33,6 +37,18 @@ const App = () => {
 				<Route
 					path="/book/list"
 					element={<ListingPage />}
+				/>
+				<Route
+					path="/book/view/:bookId"
+					element={<DetailsPage />}
+				/>
+				<Route
+					path="/book/orders"
+					element={<ViewOrderPage />}
+				/>
+				<Route
+					path="/books/orders/:bookID"
+					element={<ViewOrderDetails />}
 				/>
 			</Routes>
 		</>
